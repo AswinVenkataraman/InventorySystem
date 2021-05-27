@@ -1,10 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
-[CreateAssetMenu(fileName ="ItemObject", menuName ="ScriptableObjects/New Item Object", order = 0)]
+public enum ItemType
+{
+    NONE,
+    POTION_HEALTH,
+    POTION_ATTACK,
+    POTION_DEFENCE
+}
+
 public abstract class ItemObject : ScriptableObject
 {
     public GameObject itemPrefab;
-    public abstract void UseItem();
+    public ItemType itemType;
+    public abstract void UseItem(BarProgress currProgress);
+
 }
+

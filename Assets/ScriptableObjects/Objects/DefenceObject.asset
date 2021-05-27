@@ -14,4 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemPrefab: {fileID: 4402894496796830162, guid: fe8028cb40629954091247e2452adf51,
     type: 3}
+  itemType: 3
   defencePoints: 8
+  defenceBar:
+    currBarType: 2
+    currBarValue: 112

@@ -25,6 +25,13 @@ public class DropHandler : MonoBehaviour, IDropHandler
 
         prevPosition = int.Parse(eventData.pointerDrag.gameObject.transform.parent.name);
 
+        if (prevPosition == int.Parse(name))
+        {
+            eventData.pointerDrag.gameObject.transform.localPosition = Vector2.zero;
+            return;
+        }
+
+
         /*if (transform.childCount !=0)
         {
             eventData.pointerDrag.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
@@ -40,7 +47,8 @@ public class DropHandler : MonoBehaviour, IDropHandler
             else // Move from object to player
                 adjustList(prevPosition - 1, int.Parse(transform.name) - 1, ref objectInventoryData, ref playerInventoryData);
 
-        } else // Moved in Same Group
+        }
+        else // Moved in Same Group
         {
             if (parentTrans.name.Contains("Player"))
                 adjustList(prevPosition-1, int.Parse(transform.name)-1, ref playerInventoryData);
@@ -59,16 +67,51 @@ public class DropHandler : MonoBehaviour, IDropHandler
     {
         Debug.Log("prevPosition = " + prevPosition + " currPosition = " + currPosition);
 
+
+        if (_currentList[currPosition].itemObj != null && _prevList[prevPosition].itemObj != null &&
+        _currentList[currPosition].itemObj.itemType == _prevList[prevPosition].itemObj.itemType)
+        {
+            _currentList[currPosition].itemObj = _prevList[prevPosition].itemObj;
+            _currentList[currPosition].amount += _prevList[prevPosition].amount;
+
+            _prevList[prevPosition].itemObj = null;
+            _prevList[prevPosition].amount = 0;
+            return;
+        }
+
+
+       InventoryData tempData = new InventoryData();
+
+        tempData.itemObj = _currentList[currPosition].itemObj;
+        tempData.amount = _currentList[currPosition].amount;
+
         _currentList[currPosition].itemObj = _prevList[prevPosition].itemObj;
         _currentList[currPosition].amount = _prevList[prevPosition].amount;
 
-        _prevList[prevPosition].itemObj = null;
-        _prevList[prevPosition].amount = 0;
+        _prevList[prevPosition].itemObj = tempData.itemObj;
+        _prevList[prevPosition].amount = tempData.amount;
+
+       // _prevList[prevPosition].itemObj = null;
+       // _prevList[prevPosition].amount = 0;
     }
 
     void adjustList(int prevPosition, int currPosition, ref List<InventoryData> _list)
     {
         Debug.Log("prevPosition = " + prevPosition + " currPosition = " + currPosition);
+
+
+        if (_list[currPosition].itemObj != null && _list[prevPosition].itemObj != null &&
+            _list[currPosition].itemObj.itemType == _list[prevPosition].itemObj.itemType)
+        {
+            _list[currPosition].itemObj = _list[prevPosition].itemObj;
+            _list[currPosition].amount += _list[prevPosition].amount;
+
+            _list[prevPosition].itemObj = null;
+            _list[prevPosition].amount = 0;
+
+            return;
+        }
+
 
         InventoryData tempData = new InventoryData();
 

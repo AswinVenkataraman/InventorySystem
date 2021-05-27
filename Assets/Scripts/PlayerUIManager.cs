@@ -19,6 +19,8 @@ public class PlayerUIManager : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log("healthBar = " + healthBar.currBarValue);
+
         healthText.text = "Health:" + healthBar.currBarValue + "%";
         attackText.text = "Attack:" + attackBar.currBarValue + "%";
         defenceText.text = "Defence:" + defenceBar.currBarValue + "%";

@@ -8,12 +8,9 @@ public class FoodObject : ItemObject
 {
     public int restoreHP;
 
-    [Inject]
-    BarProgress healthBar;
-
-    public override void UseItem()
+    public override void UseItem(BarProgress currProgress)
     {
-        healthBar.currBarValue += restoreHP;
+        currProgress.currBarValue += restoreHP;
     }
 
 }

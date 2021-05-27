@@ -31,6 +31,7 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     {
         canvasGroup.alpha = 1;
         canvasGroup.blocksRaycasts = true;
+        eventData.pointerDrag.gameObject.transform.localPosition = Vector2.zero;
 
     }
 

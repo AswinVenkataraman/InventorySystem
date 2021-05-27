@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemPrefab: {fileID: 2470961460839757644, guid: 55610f286d7dcad4b89e78500a0c2e76,
     type: 3}
-  restoreHP: 0
+  itemType: 1
+  restoreHP: 5

@@ -6,6 +6,14 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 
+public enum barType
+{
+    Health,
+    Attack,
+    Defence
+}
+
+
 public class InventoryManager : MonoBehaviour
 {
     [Inject]
@@ -17,18 +25,25 @@ public class InventoryManager : MonoBehaviour
     public GameObject playerInventoryObj;
     public GameObject objectInventoryObj;
 
+    [Inject]
+    public BarProgress defenceBar;
+
+    [Inject]
+    public BarProgress healthBar;
+
+    [Inject]
+    public BarProgress attackBar;
 
     private void Awake()
     {
-
         playerInventoryObj.transform.Find("Button").GetComponent<Button>().onClick.AddListener(OnSortClicked);
         objectInventoryObj.transform.Find("Button").GetComponent<Button>().onClick.AddListener(OnSortClicked);
 
         int pos = 1;
         foreach (InventoryData data in playerInventoryData)
         {
-            if(data.itemObj!=null)
-                CreateInventoryObject(playerInventoryObj, pos, data.itemObj.itemPrefab, data.amount);
+            if (data.itemObj != null)
+                CreateInventoryObject(playerInventoryObj, pos, data.itemObj.itemPrefab, data.amount, data);
             pos++;
         }
 
@@ -36,15 +51,14 @@ public class InventoryManager : MonoBehaviour
         foreach (InventoryData data in objectInventoryData)
         {
             if (data.itemObj != null)
-                CreateInventoryObject(objectInventoryObj, pos, data.itemObj.itemPrefab, data.amount);
+                CreateInventoryObject(objectInventoryObj, pos, data.itemObj.itemPrefab, data.amount, data);
             pos++;
         }
     }
 
 
-    public void CreateInventoryObject(GameObject _parentObj, int _position, GameObject _obj, int _amount)
+    public void CreateInventoryObject(GameObject _parentObj, int _position, GameObject _obj, int _amount, InventoryData _currData)
     {
-
         Transform transformObj = _parentObj.transform.Find(_position.ToString());
         GameObject createdObj = GameObject.Instantiate(_obj, transformObj);
         createdObj.transform.localPosition = Vector2.zero;
@@ -55,6 +69,12 @@ public class InventoryManager : MonoBehaviour
         createdObj.GetComponent<Canvas>().sortingOrder = 1;
         createdObj.AddComponent<GraphicRaycaster>();
 
+        if(_currData.itemObj.itemType == ItemType.POTION_HEALTH)
+            createdObj.AddComponent<Button>().onClick.AddListener( ()=>_currData.itemObj.UseItem(healthBar));
+        else if (_currData.itemObj.itemType == ItemType.POTION_ATTACK)
+            createdObj.AddComponent<Button>().onClick.AddListener(() => _currData.itemObj.UseItem(attackBar));
+        else if (_currData.itemObj.itemType == ItemType.POTION_DEFENCE)
+            createdObj.AddComponent<Button>().onClick.AddListener(() => _currData.itemObj.UseItem(defenceBar));
 
         GameObject textObj = new GameObject("Amount", typeof(TextMeshProUGUI));
         textObj.transform.SetParent(createdObj.transform);
@@ -92,6 +112,9 @@ public class InventoryManager : MonoBehaviour
 
         foreach(Transform child in playerInventoryObj.transform)
         {
+            if (child.name.Contains("Button"))
+                continue;
+
             foreach (Transform insideTrans in child.transform)
             {
                 Destroy(insideTrans.gameObject);
@@ -100,6 +123,9 @@ public class InventoryManager : MonoBehaviour
 
         foreach (Transform child in objectInventoryObj.transform)
         {
+            if (child.name.Contains("Button"))
+                continue;
+
             foreach (Transform insideTrans in child.transform)
             {
                 Destroy(insideTrans.gameObject);
@@ -110,7 +136,7 @@ public class InventoryManager : MonoBehaviour
         foreach (InventoryData data in playerInventoryData)
         {
             if (data.itemObj != null)
-                CreateInventoryObject(playerInventoryObj, pos, data.itemObj.itemPrefab, data.amount);
+                CreateInventoryObject(playerInventoryObj, pos, data.itemObj.itemPrefab, data.amount, data);
             pos++;
         }
 
@@ -118,7 +144,7 @@ public class InventoryManager : MonoBehaviour
         foreach (InventoryData data in objectInventoryData)
         {
             if (data.itemObj != null)
-                CreateInventoryObject(objectInventoryObj, pos, data.itemObj.itemPrefab, data.amount);
+                CreateInventoryObject(objectInventoryObj, pos, data.itemObj.itemPrefab, data.amount,data);
             pos++;
         }
 

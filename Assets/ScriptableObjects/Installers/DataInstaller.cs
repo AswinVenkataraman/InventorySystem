@@ -14,28 +14,35 @@ public class DataInstaller : ScriptableObjectInstaller<DataInstaller>
 
     public override void InstallBindings()
     {
-        Container.BindInstance<List<InventoryData>>(playerInventoryData).When(context => string.Equals("playerInventoryData", context.MemberName));
-        Container.BindInstance<List<InventoryData>>(objectInventoryData).When(context => string.Equals("objectInventoryData", context.MemberName));
+        Container.BindInstance<List<InventoryData>>(playerInventoryData).When(context => string.Equals("playerInventoryData", context.MemberName)).NonLazy();
+        Container.BindInstance<List<InventoryData>>(objectInventoryData).When(context => string.Equals("objectInventoryData", context.MemberName)).NonLazy();
 
-        Container.BindInstance<BarProgress>(healthBar).When(context => string.Equals("healthBar", context.MemberName));
-        Container.BindInstance<BarProgress>(attackBar).When(context => string.Equals("attackBar", context.MemberName)); ;
-        Container.BindInstance<BarProgress>(defenceBar).When(context => string.Equals("defenceBar", context.MemberName)); ;
+        Container.BindInstance<BarProgress>(healthBar).AsSingle();
+
+        /*Container.BindInstance<BarProgress>(healthBar).AsCached().When(context => string.Equals("healthBar", context.MemberName)).NonLazy();
+        Container.BindInstance<BarProgress>(attackBar).AsCached().When(context => string.Equals("attackBar", context.MemberName)).NonLazy();
+        Container.BindInstance<BarProgress>(defenceBar).AsCached().When(context => string.Equals("defenceBar", context.MemberName)).NonLazy();*/
+
+        Container.QueueForInject(playerInventoryData);
+        Container.QueueForInject(objectInventoryData);
+        Container.QueueForInject(healthBar);
+       // Container.QueueForInject(attackBar);
+       // Container.QueueForInject(defenceBar);
 
     }
+
 }
 
-public enum ItemType
+[System.Serializable]
+public class BarProgress
 {
-    NONE,
-    POTION_HEALTH,
-    POTION_ATTACK,
-    POTION_DEFENCE
+    public barType currBarType;
+    public int currBarValue;
 }
 
 [System.Serializable]
 public class InventoryData
 {
     public ItemObject itemObj;
-    public ItemType itemType;
     public int amount;
 }

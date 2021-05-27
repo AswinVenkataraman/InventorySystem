@@ -8,11 +8,9 @@ public class DefenceObject : ItemObject
 {
     public int defencePoints;
 
-    [Inject]
-    BarProgress defenceBar;
-    public override void UseItem()
+    public override void UseItem(BarProgress currProgress)
     {
-        defenceBar.currBarValue += defencePoints;
+        currProgress.currBarValue += defencePoints;
     }
 
 }
